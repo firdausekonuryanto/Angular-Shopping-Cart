@@ -1,0 +1,83 @@
+<div class="container">
+  <div class="row">
+    <div class="col-4">
+<!-- ------------------------------------------------------------ bagian kiri ------------------------------------------------------->
+<h2>{{ isNewProduct ? 'Tambah Produk' : 'Edit Produk' }}</h2>
+<form (ngSubmit)="saveProduct()" enctype="multipart/form-data">
+<table class="table table-striped">
+    <tr>
+      <td style="white-space: nowrap;">Nama Produk</td>
+      <td>:</td>
+      <td>
+        <ng-container *ngIf="product">
+          <input type="text" class="form-control"  [(ngModel)]="product.nama" name="nama" required>
+        </ng-container>
+      </td>
+    </tr>
+    <tr>
+      <td>Harga</td>
+      <td>:</td>
+      <td>
+        <ng-container *ngIf="product">
+          <input type="number" class="form-control" [(ngModel)]="product.harga" name="harga" required>
+        </ng-container>
+      </td>
+    </tr>
+    <tr>
+      <td>Deskripsi</td>
+      <td>:</td>
+      <td>
+        <ng-container *ngIf="product">
+          <textarea [(ngModel)]="product.deskripsi" class="form-control" name="deskripsi" required></textarea>
+        </ng-container>
+      </td>
+    </tr>
+    <tr>
+      <td>Gambar</td>
+      <td>:</td>
+      <td>
+        <ng-container *ngIf="product">
+          <input type="file" class="form-control" (change)="onFileSelected($event)" name="gambar" accept="image/*" required>
+        </ng-container>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="3">
+        <button type="submit">{{ isNewProduct ? 'Tambah' : 'Simpan' }}</button>
+      </td>
+    </tr>
+</table>
+</form>
+</div>
+<!-- ------------------------------------------------------------ bagian kanan ------------------------------------------------------->
+<div class="col-8">
+<h2>Daftar Produk</h2>
+<table class="table table-striped">
+  <thead class="text-center" style="background-color: #333; color: #fff;">
+    <tr>
+      <th>No</th>
+      <th>Nama</th>
+      <th>Harga</th>
+      <th>Deskripsi</th>
+      <th>Gambar</th>
+      <th>Aksi</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let product of products; let i = index">
+      <td>{{ i + 1 }}</td>
+      <td style="white-space: nowrap;">{{ product.nama }}</td>
+      <td>{{ product.harga }}</td>
+      <td>{{ product.deskripsi }}</td>
+      <td>{{ product.gambar }}<img [src]="product.gambar" width="50" height="50" alt=""></td>
+      <td style="white-space: nowrap;">
+        <button (click)="editProduct(product)">Edit</button>
+        <button (click)="deleteProduct(product)">Hapus</button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+</div>
+</div>
+</div>

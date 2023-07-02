@@ -1,0 +1,14 @@
+.header-img {
+  height: 100px;
+  width: 100%;
+}
+.container-body img {
+  width: 100%;
+}
+.container {
+  padding: 5px;
+}
+
+.rounded {
+  border-radius: 20px !important;
+}
