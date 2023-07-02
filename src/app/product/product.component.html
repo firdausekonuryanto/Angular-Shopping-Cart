@@ -69,7 +69,8 @@
       <td style="white-space: nowrap;">{{ product.nama }}</td>
       <td>{{ product.harga }}</td>
       <td>{{ product.deskripsi }}</td>
-      <td>{{ product.gambar }}<img [src]="product.gambar" width="50" height="50" alt=""></td>
+      <td>
+        <img [src]="'http://localhost:3000/uploads/' + product.gambar" width="150" height="150" alt=""></td>
       <td style="white-space: nowrap;">
         <button (click)="editProduct(product)">Edit</button>
         <button (click)="deleteProduct(product)">Hapus</button>

@@ -27,24 +27,6 @@ export class ProductComponent implements OnInit {
     });
   }
 
-  // saveProduct() {
-  //   if (this.isNewProduct && this.product) {
-  //     this.product.gambar = this.selectedFile?.name || '';
-
-  //     this.productService.addProduct(this.product).subscribe(() => {
-  //       this.resetForm();
-  //       this.loadProducts();
-  //     });
-  //   } else if (!this.isNewProduct && this.product) {
-  //     this.product.gambar = this.selectedFile?.name || '';
-
-  //     this.productService.updateProduct(this.product).subscribe(() => {
-  //       this.resetForm();
-  //       this.loadProducts();
-  //     });
-  //   }
-  // }
-
   saveProduct() {
     if (this.isNewProduct && this.product) {
       this.product.gambar = this.selectedFile?.name || '';

@@ -15,15 +15,13 @@ export class ProductService {
     return this.http.get<Product[]>(this.apiUrl);
   }
 
-  // addProduct(product: Product): Observable<any> {
-  //   return this.http.post(this.apiUrl, product);
-  // }
   addProduct(product: Product, formData: FormData): Observable<any> {
-    return this.http.post(this.apiUrl, formData, { params: { ...product } });
+    formData.append('nama', product.nama);
+    formData.append('harga', product.harga.toString());
+    formData.append('deskripsi', product.deskripsi);
+    formData.append('gambar', product.gambar);
+    return this.http.post(this.apiUrl, formData);
   }
-
-  
-  
 
   // updateProduct(product: Product): Observable<any> {
   //   const url = `${this.apiUrl}/${product.id}`;
@@ -31,8 +29,12 @@ export class ProductService {
   // }
  
   updateProduct(product: Product, formData: FormData): Observable<any> {
+    formData.append('nama', product.nama);
+    formData.append('harga', product.harga.toString());
+    formData.append('deskripsi', product.deskripsi);
+    formData.append('gambar', product.gambar);
     const url = `${this.apiUrl}/${product.id}`;
-    return this.http.put(url, formData, { params: { ...product } });
+    return this.http.put(url, formData);
   }
   
   deleteProduct(productId: number): Observable<any> {
