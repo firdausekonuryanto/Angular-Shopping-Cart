@@ -1,0 +1,116 @@
+<div class="container">
+    <div class="row">
+      <div class="col-4">
+  <!-- ------------------------------------------------------------ bagian kiri ------------------------------------------------------->
+  <h2>{{ isNewMember ? 'Tambah Member' : 'Edit Member' }}</h2>
+  <form (ngSubmit)="saveMember()">
+  <table class="table table-striped">
+      <tr>
+        <td style="white-space: nowrap;">Nama Lengkap</td>
+        <td>:</td>
+        <td>
+          <ng-container *ngIf="member">
+            <input type="text" class="form-control"  [(ngModel)]="member.name" name="name" required>
+          </ng-container>
+        </td>
+      </tr>
+      <tr>
+        <td>Gender</td>
+        <td>:</td>
+        <td>
+          <ng-container *ngIf="member">
+            <input type="text" class="form-control" [(ngModel)]="member.gender" name="gender" required>
+          </ng-container>
+        </td>
+      </tr>
+      <tr>
+        <td>Phone</td>
+        <td>:</td>
+        <td>
+          <ng-container *ngIf="member">
+            <input type="text" class="form-control" [(ngModel)]="member.phone" name="phone" required>
+          </ng-container>
+        </td>
+      </tr>
+      <tr>
+        <td>Email</td>
+        <td>:</td>
+        <td>
+          <ng-container *ngIf="member">
+            <input type="text" class="form-control" [(ngModel)]="member.email" name="email" required>
+          </ng-container>
+        </td>
+      </tr>
+      <tr>
+        <td>username</td>
+        <td>:</td>
+        <td>
+          <ng-container *ngIf="member">
+            <input type="text" class="form-control" [(ngModel)]="member.username" name="username" required>
+          </ng-container>
+        </td>
+      </tr>
+      <tr>
+        <td>password</td>
+        <td>:</td>
+        <td>
+          <ng-container *ngIf="member">
+            <input type="password" class="form-control" [(ngModel)]="member.password" name="password" required>
+          </ng-container>
+        </td>
+      </tr>
+      <tr>
+        <td>Level</td>
+        <td>:</td>
+        <td>
+          <ng-container *ngIf="member">
+            <input type="radio" [(ngModel)]="member.is_staff" value="true" name="is_staff"> Staff |
+            <input type="radio" [(ngModel)]="member.is_staff" value="false"name="is_staff"> Bukan Staff 
+          </ng-container>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="3">
+          <button type="submit">{{ isNewMember ? 'Tambah' : 'Simpan' }}</button>
+        </td>
+      </tr>
+  </table>
+  </form>
+  </div>
+  <!-- ------------------------------------------------------------ bagian kanan ------------------------------------------------------->
+  <div class="col-8">
+  <h2>Daftar Member</h2>
+  <table class="table table-striped">
+    <thead class="text-center" style="background-color: #333; color: #fff;">
+      <tr>
+        <th>No</th>
+        <th>Nama Lengkap</th>
+        <th>Gender</th>
+        <th>Phone</th>
+        <th>Email</th>
+        <th>Username</th>
+        <th>Level</th>
+        <th>Aksi</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let member of members; let i = index">
+        <td>{{ i + 1 }}</td>
+        <td style="white-space: nowrap;">{{ member.name }}</td>
+        <td>{{ member.gender }}</td>
+        <td>{{ member.phone }}</td>
+        <td>{{ member.email }}</td>
+        <td>{{ member.username }}</td>
+        <td>{{ member.is_staff }}</td>
+        <td style="white-space: nowrap;">
+          <button (click)="editMember(member)">Edit</button>
+          <button (click)="deleteMember(member)">Hapus</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  
+  </div>
+  </div>
+  </div>
+  

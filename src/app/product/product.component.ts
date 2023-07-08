@@ -19,10 +19,14 @@ export class ProductComponent implements OnInit {
   ngOnInit() {
     this.loadProducts();
     this.product = new Product();
+    // const token = localStorage.getItem('token');
+    // const username = localStorage.getItem('username');
+    // console.log(token);
+    // console.log(username);
   }
 
   loadProducts() {
-    this.productService.getProducts().subscribe(products => {
+      this.productService.getProducts().subscribe(products => {
       this.products = products;
     });
   }
@@ -51,7 +55,6 @@ export class ProductComponent implements OnInit {
     }
   }
   
-
   editProduct(product: Product) {
     this.product = { ...product };
     this.isNewProduct = false;

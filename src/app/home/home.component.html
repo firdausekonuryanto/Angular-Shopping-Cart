@@ -1,0 +1,37 @@
+<div class="container" style="background-color: aliceblue">
+    <div class="row text-center" style="padding: 10px">
+      <div class="col">
+        <h2 class="">
+            
+          Welcome<span *ngIf="username"> {{ username }}</span> to sunratu shop,</h2>
+        you can buy anything about clothes, tshirt, pant, trousers, and etc.
+  
+        <div class="container-body">
+
+            <div class="row" style="padding: 10px">
+                <div class="col" *ngFor="let product of firstHalf" >
+                  <img [src]="'http://localhost:3000/uploads/' + product.gambar" class="img-thumbnail rounded" [alt]="product.name"  />
+                </div>
+              </div>
+              
+              <div class="row" style="padding: 10px">
+                <div class="col" *ngFor="let product of secondHalf">
+                  <img [src]="'http://localhost:3000/uploads/' + product.gambar" class="img-thumbnail rounded" [alt]="product.name" />
+                </div>
+              </div>
+              
+
+          <h3>
+            Kami juga bisa melayani pembelian secara online dengan cara sebagai
+            berikut :
+          </h3>
+          <h5>
+            Silahkan Pilih Baju kesayangan anda, screen gambar dan kirimkan<br />
+            ke customer service kami
+            <span class="blink_me">via Whatsup : 0853 3832 1400</span>
+          </h5>
+        </div>
+      </div>
+    </div>
+  </div>
+  
