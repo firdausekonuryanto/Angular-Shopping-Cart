@@ -1,0 +1,92 @@
+<h2 class="mt-4">Halaman History Pembelian</h2>
+<hr />
+
+<div class="form-inline mt-3 mb-3">
+  <div class="form-group" style="display: inline-flex">
+    <label for="start_date" style="margin-right: 10px; width: 120px"
+      >Start Date:</label
+    >
+    <input
+      type="date"
+      class="form-control"
+      id="startDate"
+      [(ngModel)]="startDate"
+      style="margin-right: 10px; margin-top: -5px"
+    />
+  </div>
+  <div class="form-group ml-3" style="display: inline-flex">
+    <label for="end_date" style="margin-right: 10px; width: 120px"
+      >End Date:</label
+    >
+    <input
+      type="date"
+      class="form-control"
+      id="endDate"
+      [(ngModel)]="endDate"
+      style="margin-right: 10px; margin-top: -5px"
+    />
+  </div>
+  <button
+    type="submit"
+    class="btn btn-primary ml-3"
+    (click)="searchTransactions()"
+  >
+    Search
+  </button>
+</div>
+
+<div *ngIf="filteredTransactions.length > 0">
+  <table class="table table-striped" style="width: 70%">
+    <thead style="background-color: rgb(30, 23, 23); color: rgb(172, 172, 172)">
+      <tr class="text-center">
+        <th>No</th>
+        <th>ID Transaksi</th>
+        <th>Member</th>
+        <th>Tanggal Pembelian</th>
+        <th>Jumlah Total</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let transaction of filteredTransactions; let i = index">
+        <td class="text-center">{{ i + 1 }}</td>
+        <td>{{ transaction.id }}</td>
+        <td>{{ transaction.member }}</td>
+        <td>{{ transaction.purchase_date }}</td>
+        <td class="text-center">{{ transaction.total_amount }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div *ngIf="filteredTransactions.length > 0">
+  <h2>Transaksi Barang</h2>
+  <table class="table table-striped" style="width: 60%">
+    <thead style="background-color: rgb(30, 23, 23); color: rgb(172, 172, 172)">
+      <tr class="text-center">
+        <th>No</th>
+        <th>Transaction</th>
+        <th>Produk</th>
+        <th>Jumlah</th>
+        <th>Subtotal</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr
+        *ngFor="let item of transactionItems; let i = index"
+        [hidden]="!isTransactionItemVisible(item)"
+      >
+        <td class="text-center">{{ i + 1 }}</td>
+        <td>{{ item.transaction }}</td>
+        <td>{{ item.product }}</td>
+        <td class="text-center">{{ item.qty }}</td>
+        <td class="text-center">{{ item.subtotal }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<!-- <img
+  *ngIf="filteredTransactions.length == 0"
+  style="width: 300px"
+  class="rounded mx-auto d-block"
+  src="https://www.shutterstock.com/image-vector/search-no-result-found-folder-260nw-1955682460.jpg"
+/> -->

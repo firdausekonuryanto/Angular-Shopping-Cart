@@ -2,7 +2,7 @@
   <div class="row">
     <div class="col-4">
 <!-- ------------------------------------------------------------ bagian kiri ------------------------------------------------------->
-<h2>{{ isNewProduct ? 'Tambah Produk' : 'Edit Produk' }}</h2>
+<h2 class="mt-4">{{ isNewProduct ? 'Tambah Produk' : 'Edit Produk' }}</h2>
 <form (ngSubmit)="saveProduct()" enctype="multipart/form-data">
 <table class="table table-striped">
     <tr>
@@ -51,7 +51,7 @@
 </div>
 <!-- ------------------------------------------------------------ bagian kanan ------------------------------------------------------->
 <div class="col-8">
-<h2>Daftar Produk</h2>
+<h2 class="mt-4">Daftar Produk</h2>
 <table class="table table-striped">
   <thead class="text-center" style="background-color: #333; color: #fff;">
     <tr>

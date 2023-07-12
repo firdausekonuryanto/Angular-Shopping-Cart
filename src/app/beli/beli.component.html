@@ -1,0 +1,157 @@
+<h2 class="mt-4">Halaman Dashboard Product</h2>
+silahkan dipilih, checkout, dan transfer. barang akan segera kami kirimkan !!!
+<hr />
+<div class="container">
+  <div class="row">
+    <div class="col-md-3" *ngFor="let product of products; let i = index">
+      <div class="card" id="coba">
+        <img
+          class="card-img-top img-thumbnail"
+          [src]="'http://localhost:3000/uploads/' + product.gambar"
+          alt="Gambar Produk"
+          (click)="openModal(product)"
+        />
+        <div class="card-body">
+          <h5 class="card-title">{{ product.nama }}</h5>
+          <p class="card-text">Harga: {{ product.harga }}</p>
+          <p class="card-text">{{ product.deskripsi }}</p>
+        </div>
+        <div class="card-footer">
+          <button class="btn btn-success" (click)="addToCart(product)">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="currentColor"
+              class="bi bi-cart-check mb-1"
+              viewBox="0 0 16 16"
+            >
+              <path
+                d="M11.354 6.354a.5.5 0 0 0-.708-.708L8 8.293 6.854 7.146a.5.5 0 1 0-.708.708l1.5 1.5a.5.5 0 0 0 .708 0l3-3z"
+              />
+              <path
+                d="M.5 1a.5.5 0 0 0 0 1h1.11l.401 1.607 1.498 7.985A.5.5 0 0 0 4 12h1a2 2 0 1 0 0 4 2 2 0 0 0 0-4h7a2 2 0 1 0 0 4 2 2 0 0 0 0-4h1a.5.5 0 0 0 .491-.408l1.5-8A.5.5 0 0 0 14.5 3H2.89l-.405-1.621A.5.5 0 0 0 2 1H.5zm3.915 10L3.102 4h10.796l-1.313 7h-8.17zM6 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm7 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"
+              />
+            </svg>
+            Beli
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  class="modal custom-modal"
+  id="gambarModal"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="gambarModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="gambarModalLabel"></h5>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+          (click)="closeModal()"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <img
+          class="img-fluid rounded mx-auto d-block"
+          style="width: 400px"
+          id="gambarModalImg"
+          src=""
+          alt="Gambar Produk"
+        />
+      </div>
+    </div>
+  </div>
+</div>
+
+<form (ngSubmit)="saveBeli()">
+  <div class="containerx" *ngIf="cartItems && cartItems.length > 0">
+    <div class="rowx">
+      <div class="col-4x">
+        <h3>Keranjang</h3>
+        <table class="table table-striped">
+          <thead style="background-color: rgb(37, 34, 34); color: bisque">
+            <tr>
+              <th>No.</th>
+              <th>Nama Produk</th>
+              <th>Harga</th>
+              <th>Qty</th>
+              <th>Sub Harga</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of cartItems; let i = index">
+              <td>{{ i + 1 }}</td>
+              <td>{{ item.nama }}</td>
+              <td>{{ item.harga }}</td>
+              <td>
+                <input
+                  class="form-control"
+                  style="width: 80px"
+                  type="number"
+                  name="qty"
+                  id=""
+                  [(ngModel)]="item.qty"
+                  (input)="calculateSubtotal(item)"
+                />
+              </td>
+              <td>{{ item.harga * item.qty }}</td>
+              <td>
+                <button class="btn btn-danger" (click)="removeFromCart(i)">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    fill="currentColor"
+                    class="bi bi-trash mb-1"
+                    viewBox="0 0 16 16"
+                  >
+                    <path
+                      d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z"
+                    />
+                    <path
+                      d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z"
+                    />
+                  </svg>
+                  Hapus
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <button class="btn btn-primary">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            fill="currentColor"
+            class="bi bi-bag-check mb-1"
+            viewBox="0 0 16 16"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M10.854 8.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 0 1 .708-.708L7.5 10.793l2.646-2.647a.5.5 0 0 1 .708 0z"
+            />
+            <path
+              d="M8 1a2.5 2.5 0 0 1 2.5 2.5V4h-5v-.5A2.5 2.5 0 0 1 8 1zm3.5 3v-.5a3.5 3.5 0 1 0-7 0V4H1v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4h-3.5zM2 5h12v9a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V5z"
+            />
+          </svg>
+          checkout
+        </button>
+      </div>
+    </div>
+  </div>
+</form>

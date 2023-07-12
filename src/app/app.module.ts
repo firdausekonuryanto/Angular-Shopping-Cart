@@ -13,6 +13,8 @@ import { MemberComponent } from './member/member.component';
 import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './home/home.component';
 import { LoginComponent } from './login/login.component';
+import { BeliComponent } from './beli/beli.component';
+import { HistoryComponent } from './history/history.component';
 
 
 @NgModule({
@@ -22,7 +24,9 @@ import { LoginComponent } from './login/login.component';
     TemplateComponent,
     MemberComponent,
     HomeComponent,
-    LoginComponent
+    LoginComponent,
+    BeliComponent,
+    HistoryComponent
   ],
   imports: [
     BrowserModule,

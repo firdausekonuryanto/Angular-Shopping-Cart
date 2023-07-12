@@ -3,36 +3,43 @@ import { ProductService } from '../services/product.service';
 import { AuthService } from '../services/auth.service';
 
 @Component({
-selector: 'app-home',
-templateUrl: './home.component.html',
-styleUrls: ['./home.component.css']
+  selector: 'app-home',
+  templateUrl: './home.component.html',
+  styleUrls: ['./home.component.css'],
 })
 export class HomeComponent implements OnInit {
-  products: any[] = []; // Initialize the 'products' property with an empty array
+  products: any[] = [];
   firstHalf: any[] = [];
   secondHalf: any[] = [];
   username: string = '';
 
-constructor(private productService: ProductService, private authService: AuthService) {}
+  constructor(
+    private productService: ProductService,
+    private authService: AuthService
+  ) {}
 
-ngOnInit() {
-  this.getProducts(); // Panggil metode untuk mengambil data produk saat komponen diinisialisasi
-  this.username = localStorage.getItem('username')!;
-  const username = localStorage.getItem('username');
+  ngOnInit() {
+    this.getProducts();
+    this.username = localStorage.getItem('username')!;
+    const data_member_login =
+      localStorage.getItem('username') +
+      ' - ' +
+      localStorage.getItem('id_member')! +
+      ' - ' +
+      localStorage.getItem('is_staff')!;
 
-}
-
-getProducts() {
-  this.productService.getProductsHome().subscribe(
-    (data: any) => {
-      this.firstHalf = data.firstHalf;
-      this.secondHalf = data.secondHalf;
-    },
-    (error) => {
-      console.error('Terjadi kesalahan:', error);
-    }
-  );
+    console.log(data_member_login);
   }
 
-  
+  getProducts() {
+    this.productService.getProductsHome().subscribe(
+      (data: any) => {
+        this.firstHalf = data.firstHalf;
+        this.secondHalf = data.secondHalf;
+      },
+      (error) => {
+        console.error('Terjadi kesalahan:', error);
+      }
+    );
+  }
 }

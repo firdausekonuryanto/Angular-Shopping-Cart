@@ -1,90 +1,100 @@
-const express = require('express');
-const session = require('express-session');
-const cors = require('cors');
-const multer = require('multer');
-const fs = require('fs');
+const express = require("express");
+const session = require("express-session");
+const cors = require("cors");
+const multer = require("multer");
+const fs = require("fs");
 const { MongoClient } = require("mongodb");
-const bodyParser = require('body-parser');
-const path = require('path');
-const jwt = require('jsonwebtoken');
+const bodyParser = require("body-parser");
+const path = require("path");
+const jwt = require("jsonwebtoken");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, 'uploads'); 
+    cb(null, "uploads");
   },
   filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, file.originalname); 
-  }
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    cb(null, file.originalname);
+  },
 });
 
-const upload  = multer({ storage: storage });
-const app     = express();
-const port    = 3000;
-const url     = "mongodb://127.0.0.1:27017";
-const client  = new MongoClient(url);
-const dbName  = "angular-example";
+const upload = multer({ storage: storage });
+const app = express();
+const port = 3000;
+const url = "mongodb://127.0.0.1:27017";
+const client = new MongoClient(url);
+const dbName = "angular-example";
 
-app.use('/uploads', express.static('uploads'));
+app.use("/uploads", express.static("uploads"));
 app.use(bodyParser.json());
 app.use(cors());
 
 // Konfigurasi express-session
 app.use(
   session({
-    secret: 'rahasia', // rahasia ini dapat diganti
+    secret: "rahasia", // rahasia ini dapat diganti
     resave: false,
-    saveUninitialized: true
+    saveUninitialized: true,
   })
 );
 
-// ------------------------------------------------------- batas konfigurasi ----------------------------------------------------- 
+// ------------------------------------------------------- batas konfigurasi -----------------------------------------------------
 // ----------------------------------------------------------------- login -------------------------------------------------------
 
 // Middleware untuk memverifikasi token
 function verifyToken(req, res, next) {
-  const token = req.headers.authorization?.split(' ')[1];
+  const token = req.headers.authorization?.split(" ")[1];
   if (!token) {
-    return res.status(401).json({ message: 'Token tidak ada' });
+    return res.status(401).json({ message: "Token tidak ada" });
   }
-  jwt.verify(token, 'rahasia_token', (err, decoded) => {
+  jwt.verify(token, "rahasia_token", (err, decoded) => {
     if (err) {
-      return res.status(401).json({ message: 'Token tidak valid' });
+      return res.status(401).json({ message: "Token tidak valid" });
     }
     req.user = decoded;
     next();
   });
 }
 
-app.post('/api/auth/login', bodyParser.urlencoded(), async (req, res, next) => {
-  const { username, password } = req.body;
-  try {
-    await client.connect();
-    const db = client.db(dbName);
-    const collection = db.collection('members');
-    const member = await collection.findOne({ username, password });
+app.post(
+  "/api/auth/login",
+  bodyParser.urlencoded(),
+  async (req, res, next) => {
+    const { username, password } = req.body;
+    try {
+      await client.connect();
+      const db = client.db(dbName);
+      const collection = db.collection("members");
+      const member = await collection.findOne({ username, password });
 
-    if (!member) {
-      return res.sendStatus(401);
+      if (!member) {
+        return res.sendStatus(401);
+      }
+
+      res.locals.username = username;
+      res.locals.success = true;
+      const token = jwt.sign({ username }, "rahasia_token"); // rahasia_token ini dapat diganti
+      req.session.token = token;
+      res.send({
+        message: "Login berhasil",
+        token,
+        username: username,
+        id_member: member.id.toString(),
+        is_staff: member.is_staff,
+      });
+
+      next();
+    } catch (err) {
+      console.error("Gagal menemukan anggota:", err);
+      res.sendStatus(500);
     }
-
-    res.locals.username = username;
-    res.locals.success = true; 
-    const token = jwt.sign({ username }, 'rahasia_token'); // rahasia_token ini dapat diganti
-    req.session.token = token;
-    res.send({ message: 'Login berhasil', token, username:username });
-
-    next();
-  } catch (err) {
-    console.error('Gagal menemukan anggota:', err);
-    res.sendStatus(500);
+  },
+  (req, res) => {
+    req.session.loggedIn = true;
+    req.session.username = res.locals.username;
+    console.log(req.session);
   }
-},
-(req, res) => {
-  req.session.loggedIn = true;
-  req.session.username = res.locals.username;
-  console.log(req.session);
-  });
+);
 
 app.get("/logout", (req, res) => {
   req.session.destroy((err) => {});
@@ -92,10 +102,61 @@ app.get("/logout", (req, res) => {
 });
 
 // ----------------------------------------------------------------- batas login -----------------------------------------------------
+app.post("/transactions", async (req, res) => {
+  try {
+    const newTransaction = req.body;
+    console.log(newTransaction);
+
+    await client.connect();
+    const db = client.db(dbName);
+    const collection = db.collection("transactions");
+    const result = await collection.insertOne(newTransaction[0]); // Menggunakan objek tunggal
+    const insertedId = result.insertedId;
+
+    res.status(201).json({ newTransaction, insertedIds: [insertedId] });
+  } catch (error) {
+    console.error("Gagal menyimpan data transaksi ke MongoDB:", error);
+    res.status(500).json({ error: "Gagal menyimpan data transaksi" });
+  }
+});
+
+app.post("/transactionitems", async (req, res) => {
+  try {
+    const newTransactionItems = req.body;
+    console.log(newTransactionItems);
+
+    await client.connect();
+    const db = client.db(dbName);
+    const collection = db.collection("transactionitems");
+    const result = await collection.insertMany(newTransactionItems);
+    const insertedIds = result.insertedIds;
+
+    res.status(201).json({ insertedIds });
+  } catch (error) {
+    console.error("Gagal menyimpan data transaksi barang ke MongoDB:", error);
+    res.status(500).json({ error: "Gagal menyimpan data transaksi barang" });
+  }
+});
+
+app.get("/transactions", async (req, res) => {
+  await client.connect();
+  const db = client.db(dbName);
+  let collection = await db.collection("transactions");
+  let results = await collection.find({}).limit(50).toArray();
+  res.json(results);
+});
+
+app.get("/transactionitems", async (req, res) => {
+  await client.connect();
+  const db = client.db(dbName);
+  let collection = await db.collection("transactionitems");
+  let results = await collection.find({}).limit(50).toArray();
+  res.json(results);
+});
+
 // ----------------------------------------------------------------- PRODUCT ---------------------------------------------------------
 
 app.get("/products", verifyToken, async (req, res) => {
-  console.log(req.session.username);
   await client.connect();
   const db = client.db(dbName);
   let collection = await db.collection("products");
@@ -116,19 +177,24 @@ app.get("/products_home", async (req, res) => {
   res.json({ firstHalf, secondHalf });
 });
 
-app.post("/products", verifyToken, upload.single('gambar'), async (req, res) => {
-  const file = req.file;
-  const product = req.body;
-  console.log(product);
-  product.id = generateId();
-  await client.connect();
-  const db = client.db(dbName);
-  const collection = db.collection("products");
-  await collection.insertOne(product);
-  res.status(201).json(product);
-});
+app.post(
+  "/products",
+  verifyToken,
+  upload.single("gambar"),
+  async (req, res) => {
+    const file = req.file;
+    const product = req.body;
+    console.log(product);
+    product.id = generateId();
+    await client.connect();
+    const db = client.db(dbName);
+    const collection = db.collection("products");
+    await collection.insertOne(product);
+    res.status(201).json(product);
+  }
+);
 
-app.put('/products/:id', upload.single('gambar'), async (req, res) => {
+app.put("/products/:id", upload.single("gambar"), async (req, res) => {
   const productId = parseInt(req.params.id);
   await client.connect();
   const db = client.db(dbName);
@@ -136,7 +202,7 @@ app.put('/products/:id', upload.single('gambar'), async (req, res) => {
   const existingProduct = await collection.findOne({ id: productId });
 
   if (existingProduct.gambar) {
-    const filePath = path.join(__dirname, 'uploads', existingProduct.gambar);
+    const filePath = path.join(__dirname, "uploads", existingProduct.gambar);
     fs.unlink(filePath, (err) => {
       if (err) {
         console.error(err);
@@ -145,7 +211,11 @@ app.put('/products/:id', upload.single('gambar'), async (req, res) => {
   }
 
   if (req.file) {
-    const updatedProduct = { ...existingProduct, ...req.body, gambar: req.file.filename };
+    const updatedProduct = {
+      ...existingProduct,
+      ...req.body,
+      gambar: req.file.filename,
+    };
     delete updatedProduct._id;
     await collection.updateOne({ id: productId }, { $set: updatedProduct });
     res.json(updatedProduct);
@@ -157,7 +227,7 @@ app.put('/products/:id', upload.single('gambar'), async (req, res) => {
   }
 });
 
-app.delete('/products/:id', async (req, res) => {
+app.delete("/products/:id", async (req, res) => {
   const productId = parseInt(req.params.id);
   await client.connect();
   const db = client.db(dbName);
@@ -165,7 +235,11 @@ app.delete('/products/:id', async (req, res) => {
   const deletedProduct = await collection.findOneAndDelete({ id: productId });
 
   if (deletedProduct.value) {
-    const filePath = path.join(__dirname, 'uploads', deletedProduct.value.gambar);
+    const filePath = path.join(
+      __dirname,
+      "uploads",
+      deletedProduct.value.gambar
+    );
     fs.unlink(filePath, (err) => {
       if (err) {
         console.error(err);
@@ -173,7 +247,7 @@ app.delete('/products/:id', async (req, res) => {
     });
     res.json(deletedProduct.value);
   } else {
-    res.status(404).json({ message: 'Product not found' });
+    res.status(404).json({ message: "Product not found" });
   }
 });
 
@@ -199,7 +273,7 @@ app.post("/members", async (req, res) => {
   res.status(201).json(member);
 });
 
-app.put('/members/:id', async (req, res) => {
+app.put("/members/:id", async (req, res) => {
   const memberid = parseInt(req.params.id);
   await client.connect();
   const db = client.db(dbName);
@@ -211,7 +285,7 @@ app.put('/members/:id', async (req, res) => {
   res.json(updateMember);
 });
 
-app.delete('/members/:id', async (req, res) => {
+app.delete("/members/:id", async (req, res) => {
   const memberid = parseInt(req.params.id);
   await client.connect();
   const db = client.db(dbName);

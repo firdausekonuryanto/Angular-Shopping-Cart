@@ -1,0 +1,44 @@
+.custom-modal {
+    background-color: rgba(0, 0, 0, 0.7); /* Warna hitam dengan transparansi 50% */
+  }
+  
+  .custom-modal .modal-content {
+    background-color: #fff; /* Warna latar belakang konten modal */
+  }
+  
+  .custom-modal .modal-body {
+    padding: 20px; /* Padding pada konten modal */
+  }
+  
+  .custom-modal .modal-title {
+    color: #000; /* Warna teks judul modal */
+  }
+  
+  .custom-modal .modal-body img {
+    max-width: 100%; /* Gambar dalam modal agar tidak melebihi lebar modal */
+  }
+
+  /* cart */
+  .containerx {
+    position: fixed;
+    width: auto;
+    top: 0px;
+    right: 10px;
+    z-index: 9999;
+    transform: translateX(0);
+    transition: transform 0.3s ease-in-out;
+  }
+  
+  .rowx {
+    background-color:rgb(253, 247, 247);
+    padding: 30px;
+    border-color: rgb(0, 0, 0);
+    border-style: dotted;
+    border-width: 1px;;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+  }
+  
+  .col-4x {
+    margin-top: 20px;
+  }
